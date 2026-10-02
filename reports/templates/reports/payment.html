@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo thanh toán{% endblock %}
+{% block content %}
+<h2>💳 Báo cáo phương thức thanh toán</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Phương thức</th><th>Số giao dịch</th><th>Tổng tiền</th></tr></thead>
+    <tbody>
+      {% for summary in payment_summary %}
+      <tr><td>{{ summary.payment_method }}</td><td>{{ summary.total_transactions }}</td><td>{{ summary.total_amount }} VND</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<a class="btn secondary" href="{% url 'export_payment_excel' %}">Xuất Excel</a>
+{% endblock %}

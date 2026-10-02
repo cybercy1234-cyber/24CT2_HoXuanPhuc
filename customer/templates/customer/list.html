@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Yêu cầu khách hàng{% endblock %}
+{% block content %}
+<h2>📋 Danh sách yêu cầu từ khách</h2>
+<div class="card">
+  <ul>
+    {% for req in requests %}
+    <li><b>Bàn {{ req.table_number }}</b> — {{ req.get_request_type_display }}
+      {% if req.note %}<i>({{ req.note }})</i>{% endif %}
+      &nbsp;<a class="btn light" href="{% url 'handle_request' req.id %}">Xử lý</a>
+    </li>
+    {% empty %}
+    <li>Không có yêu cầu nào.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

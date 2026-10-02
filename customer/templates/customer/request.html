@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Gọi nhân viên{% endblock %}
+{% block content %}
+<h2>🔔 Gọi nhân viên / Yêu cầu thanh toán</h2>
+<div class="card">
+  <form method="post">
+    {% csrf_token %}
+    <label>Số bàn:</label>
+    <input type="text" name="table_number" required>
+    <label>Yêu cầu:</label>
+    <select name="request_type">
+      <option value="ice">Thêm đá</option>
+      <option value="towel">Khăn lạnh</option>
+      <option value="chopsticks">Đổi đũa</option>
+      <option value="payment">Gọi tính tiền</option>
+      <option value="other">Khác</option>
+    </select>
+    <label>Ghi chú:</label>
+    <textarea name="note"></textarea>
+    <button class="btn" type="submit">Gửi yêu cầu</button>
+  </form>
+</div>
+{% endblock %}

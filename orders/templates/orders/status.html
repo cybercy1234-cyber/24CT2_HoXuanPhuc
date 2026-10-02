@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Đơn hàng #{{ order.id }}{% endblock %}
+{% block content %}
+<h2>📦 Đơn hàng #{{ order.id }}</h2>
+<div class="card">
+  <p><b>Trạng thái:</b> {{ order.get_status_display }}</p>
+  <p><b>Số bàn:</b> {{ order.table_number }}</p>
+  <table style="margin-top:12px;">
+    <thead><tr><th>Món</th><th>SL</th><th>Thành tiền</th></tr></thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr><td>{{ item.menu_item.name }}</td><td>{{ item.quantity }}</td><td>{{ item.total_price }}đ</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p style="margin-top:12px;"><b>Tổng tiền:</b> <span class="price">{{ order.total_price }}đ</span></p>
+</div>
+{% endblock %}

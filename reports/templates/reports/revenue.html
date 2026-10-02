@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo doanh thu{% endblock %}
+{% block content %}
+<h2>📈 Báo cáo doanh thu</h2>
+<div class="card">
+  <p><b>Tổng doanh thu:</b> <span class="price">{{ total_revenue }}đ</span></p>
+  <p><b>Tổng số đơn:</b> {{ total_orders }}</p>
+</div>
+<div class="card">
+  <h3>🔥 Món bán chạy nhất</h3>
+  <ul>
+    {% for item in top_items %}
+    <li>{{ item.menu_item__name }} — SL: <b>{{ item.total_sold }}</b></li>
+    {% endfor %}
+  </ul>
+</div>
+<a class="btn secondary" href="{% url 'export_revenue_excel' %}">Xuất Excel</a>
+{% endblock %}
