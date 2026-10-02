@@ -3,6 +3,9 @@
 {% block content %}
 <h2>🔔 Gọi nhân viên / Yêu cầu thanh toán</h2>
 <div class="card">
+  {% for message in messages %}
+  <p class="error" style="background:#e5ffe9;color:#1a7f37;">{{ message }}</p>
+  {% endfor %}
   <form method="post">
     {% csrf_token %}
     <label>Số bàn:</label>

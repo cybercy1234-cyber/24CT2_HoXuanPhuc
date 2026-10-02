@@ -41,9 +41,18 @@
   <a href="{% url 'menu_page' %}">Thực đơn</a>
   <a href="{% url 'cart' %}">Giỏ hàng</a>
   <a href="{% url 'request_service' %}">Gọi nhân viên</a>
-  <a href="{% url 'customer_requests' %}">Yêu cầu</a>
-  <a href="{% url 'revenue_report' %}">Doanh thu</a>
-  <a href="{% url 'login' %}">Đăng nhập</a>
+  {% if user.is_authenticated %}
+    {% if user.role != 'customer' %}
+      <a href="{% url 'customer_requests' %}">Yêu cầu</a>
+    {% endif %}
+    {% if user.role == 'admin' or user.role == 'cashier' %}
+      <a href="{% url 'revenue_report' %}">Doanh thu</a>
+    {% endif %}
+    {% if user.role == 'admin' %}<a href="/admin/">Quản trị</a>{% endif %}
+    <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>
+  {% else %}
+    <a href="{% url 'login' %}">Đăng nhập</a>
+  {% endif %}
 </nav>
 <div class="container">
   {% block content %}{% endblock %}

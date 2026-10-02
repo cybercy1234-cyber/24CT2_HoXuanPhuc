@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import CustomerRequest
 
 def request_service(request):
@@ -12,7 +13,8 @@ def request_service(request):
             request_type=request_type,
             note=note
         )
-        return redirect("customer_requests")
+        messages.success(request, "Đã gửi yêu cầu, nhân viên sẽ đến ngay!")
+        return redirect("request_service")
     return render(request, "customer/request.html")
 
 def customer_requests(request):
