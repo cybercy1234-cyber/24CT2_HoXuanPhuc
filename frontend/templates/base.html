@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Nhà hàng{% endblock %}</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<nav>
+  <a class="brand" href="{% url 'menu_page' %}">🍜 Food Ordering</a>
+  <a href="{% url 'menu_page' %}">Thực đơn</a>
+  <a href="{% url 'cart' %}">Giỏ hàng</a>
+  {% if not user.is_authenticated or user.role == 'customer' %}
+  <a href="{% url 'request_service' %}">Gọi nhân viên</a>
+  {% endif %}
+  {% if user.is_authenticated %}
+    {% if user.role != 'customer' %}
+      <a href="{% url 'customer_requests' %}">Yêu cầu</a>
+    {% endif %}
+    {% if user.role == 'admin' or user.role == 'cashier' %}
+      <a href="{% url 'revenue_report' %}">Doanh thu</a>
+    {% endif %}
+    {% if user.role == 'admin' %}<a href="/admin/">Quản trị</a>{% endif %}
+    <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>
+  {% else %}
+    <a href="{% url 'login' %}">Đăng nhập</a>
+  {% endif %}
+</nav>
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

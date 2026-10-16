@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'menu',
 ]
 AUTH_USER_MODEL = 'users.User'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 MIDDLEWARE = [
@@ -56,12 +57,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'food_ordering.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR.parent / 'frontend' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'food_ordering.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
@@ -81,8 +82,12 @@ WSGI_APPLICATION = 'food_ordering.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'food_ordering',
+        'USER': 'root',
+        'PASSWORD': 'phuc2006K!',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -122,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR.parent / 'frontend' / 'static']
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
