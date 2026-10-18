@@ -26,6 +26,7 @@
     <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>
   {% else %}
     <a href="{% url 'login' %}">Đăng nhập</a>
+    <a href="{% url 'register' %}">Đăng ký</a>
   {% endif %}
 </nav>
 <div class="container">
