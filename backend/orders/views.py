@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Order, OrderItem
 from menu.models import MenuItem
+
+STAFF_ROLES = ('admin', 'cashier', 'chef', 'staff')
 
 def get_current_order(request):
     order_id = request.session.get("order_id")
@@ -54,3 +57,22 @@ def submit_order(request):
 def order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, "orders/status.html", {"order": order})
+
+@login_required
+def confirm_order(request, order_id):
+    """Nhân viên xác nhận đơn hàng của khách hàng (pending → confirmed)."""
+    if request.user.role not in STAFF_ROLES:
+        return redirect("menu_page")
+    order = get_object_or_404(Order, id=order_id)
+    if order.status != 'pending':
+        return redirect("order_status", order_id=order.id)
+    order.status = 'confirmed'
+    order.save()
+    return redirect("order_status", order_id=order.id)
+
+@login_required
+def qr_payment(request):
+    """Trang hiển thị QR thanh toán (chỉ nhân viên/quản trị xem)."""
+    if request.user.role not in STAFF_ROLES:
+        return redirect("menu_page")
+    return render(request, "orders/qr_payment.html")

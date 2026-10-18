@@ -21,6 +21,7 @@
     {% endif %}
     {% if user.role == 'admin' or user.role == 'cashier' %}
       <a href="{% url 'revenue_report' %}">Doanh thu</a>
+      <a href="{% url 'qr_payment' %}">QR thanh toán</a>
     {% endif %}
     {% if user.role == 'admin' %}<a href="/admin/">Quản trị</a>{% endif %}
     <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>

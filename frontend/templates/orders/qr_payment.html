@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}QR Thanh toán{% endblock %}
+{% block content %}
+<h2>💳 QR Thanh toán</h2>
+<div class="card" style="max-width: 420px; margin: 0 auto; text-align: center;">
+  <img src="{% static 'images/qr_payment.png' %}" alt="QR thanh toán" style="width: 100%; max-width: 300px; border-radius: 12px; margin-bottom: 14px;">
+  <p><b>Ngân hàng:</b> BIDV / VIETQR</p>
+  <p><b>Chủ tài khoản:</b> HO XUAN PHUC</p>
+  <p><b>Số tài khoản:</b> 8873232506</p>
+  <p style="font-size: 13px; color: #666; margin-top: 10px;">Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</p>
+</div>
+<div class="actions" style="justify-content:center; margin-top: 16px;">
+  <a class="btn secondary" href="{% url 'customer_requests' %}">Quay lại yêu cầu</a>
+</div>
+{% endblock %}

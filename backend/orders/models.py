@@ -5,7 +5,8 @@ from menu.models import MenuItem
 class Order(models.Model):
     STATUS_CHOICES = [
         ('cart', 'Giỏ hàng'),
-        ('pending', 'Chờ bếp xác nhận'),
+        ('pending', 'Chờ xác nhận'),
+        ('confirmed', 'Đã xác nhận'),
         ('cooking', 'Đang chế biến'),
         ('done', 'Đã xong'),
         ('served', 'Lên món'),

@@ -8,4 +8,6 @@ urlpatterns = [
     path("cart/update/<int:item_id>/", views.update_cart, name="update_cart"),
     path("cart/submit/", views.submit_order, name="submit_order"),
     path("order/<int:order_id>/status/", views.order_status, name="order_status"),
+    path("order/<int:order_id>/confirm/", views.confirm_order, name="confirm_order"),
+    path("qr-payment/", views.qr_payment, name="qr_payment"),
 ]
