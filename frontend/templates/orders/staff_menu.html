@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Thực đơn - Nhân viên{% endblock %}
+{% block content %}
+<h2>👨‍🍳 Thực đơn - Nhân viên</h2>
+<p style="margin-bottom: 16px;">Xin chào, <b>{{ user.username }}</b> ({{ user.get_role_display }})</p>
+
+<div class="card">
+  <h3 style="margin-top:0;">🍽️ Danh sách món ăn</h3>
+  <div class="grid">
+    {% for item in items %}
+    <div class="card" style="margin-bottom:0; text-align:center;">
+      {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">{% endif %}
+      <h3>{{ item.name }}</h3>
+      <p class="price">{{ item.price }}đ</p>
+      <p>{{ item.description }}</p>
+      <div class="actions" style="justify-content:center;">
+        <a class="btn" href="{% url 'add_to_cart' item.id %}">Thêm vào giỏ</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3 style="margin-top:0;">⚡ Chức năng nhân viên</h3>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <a class="btn" href="{% url 'cart' %}" style="display:block; text-align:center;">🛒 Giỏ hàng</a>
+    <a class="btn secondary" href="{% url 'customer_requests' %}" style="display:block; text-align:center;">📋 Yêu cầu khách</a>
+    <a class="btn secondary" href="{% url 'qr_payment' %}" style="display:block; text-align:center;">💳 QR thanh toán</a>
+    <a class="btn light" href="{% url 'revenue_report' %}" style="display:block; text-align:center;">📈 Doanh thu</a>
+    {% if user.role == 'admin' %}
+    <a class="btn light" href="/admin/" style="display:block; text-align:center;">⚙️ Quản trị</a>
+    {% endif %}
+    <a class="btn light" href="{% url 'logout' %}" style="display:block; text-align:center;">🚪 Đăng xuất</a>
+  </div>
+</div>
+
+{% endblock %}

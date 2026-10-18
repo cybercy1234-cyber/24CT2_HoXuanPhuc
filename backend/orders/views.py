@@ -17,9 +17,12 @@ def get_current_order(request):
     request.session["order_id"] = order.id
     return order
 
-def menu_page(request):
+# ==================== KHÁCH HÀNG (không cần đăng nhập) ====================
+
+def customer_menu(request):
+    """Trang thực đơn dành cho khách hàng, công khai không cần đăng nhập."""
     items = MenuItem.objects.all()
-    return render(request, "orders/menu.html", {"items": items})
+    return render(request, "orders/customer_menu.html", {"items": items})
 
 def cart_view(request):
     order = get_current_order(request)
@@ -32,7 +35,7 @@ def add_to_cart(request, item_id):
     if not created:
         order_item.quantity += 1
     order_item.save()
-    return redirect("menu_page")
+    return redirect("customer_menu")
 
 def update_cart(request, item_id):
     order_item = get_object_or_404(OrderItem, id=item_id)
@@ -58,11 +61,21 @@ def order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, "orders/status.html", {"order": order})
 
+# ==================== NHÂN VIÊN (cần đăng nhập, vai trò staff) ====================
+
+@login_required
+def staff_menu(request):
+    """Trang thực đơn dành cho nhân viên, yêu cầu đăng nhập và vai trò staff."""
+    if request.user.role not in STAFF_ROLES:
+        return redirect("customer_menu")
+    items = MenuItem.objects.all()
+    return render(request, "orders/staff_menu.html", {"items": items})
+
 @login_required
 def confirm_order(request, order_id):
     """Nhân viên xác nhận đơn hàng của khách hàng (pending → confirmed)."""
     if request.user.role not in STAFF_ROLES:
-        return redirect("menu_page")
+        return redirect("customer_menu")
     order = get_object_or_404(Order, id=order_id)
     if order.status != 'pending':
         return redirect("order_status", order_id=order.id)
@@ -74,5 +87,5 @@ def confirm_order(request, order_id):
 def qr_payment(request):
     """Trang hiển thị QR thanh toán (chỉ nhân viên/quản trị xem)."""
     if request.user.role not in STAFF_ROLES:
-        return redirect("menu_page")
+        return redirect("customer_menu")
     return render(request, "orders/qr_payment.html")
