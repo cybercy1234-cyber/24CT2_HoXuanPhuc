@@ -1,0 +1,80 @@
+sequenceDiagram
+    autonumber
+    participant KH as Khách hàng
+    participant UI as Trang web (Frontend)
+    participant BE as Backend (Django)
+    participant DB as CSDL (MySQL/SQLite)
+
+    %% Xem thực đơn
+    KH->>UI: Truy cập trang thực đơn (/menu/)
+    UI->>BE: GET /menu/
+    BE->>DB: Lấy danh sách MenuItem
+    DB-->>BE: Trả về danh sách món ăn
+    BE-->>UI: Render trang menu
+    UI-->>KH: Hiển thị thực đơn
+
+    %% Thêm vào giỏ hàng
+    KH->>UI: Nhấn "Thêm vào giỏ" trên món ăn
+    UI->>BE: POST /cart/add/<item_id>/
+    BE->>DB: Tạo/lấy Order (status=cart) & OrderItem
+    DB-->>BE: Lưu vào CSDL
+    BE-->>UI: Redirect về trang menu
+    UI-->>KH: Thông báo đã thêm vào giỏ
+
+    %% Xem giỏ hàng
+    KH->>UI: Nhấn "Xem giỏ hàng"
+    UI->>BE: GET /cart/
+    BE->>DB: Lấy OrderItem của giỏ hàng hiện tại
+    DB-->>BE: Trả về chi tiết giỏ hàng
+    BE-->>UI: Render trang giỏ hàng
+    UI-->>KH: Hiển thị giỏ hàng + tổng tiền
+
+    %% Cập nhật giỏ hàng
+    KH->>UI: Thay đổi số lượng / Xóa món
+    UI->>BE: POST /cart/update/<item_id>/
+    BE->>DB: Cập nhật hoặc xóa OrderItem
+    DB-->>BE: Xác nhận
+    BE-->>UI: Redirect về giỏ hàng
+
+    %% Đăng nhập / Đăng ký
+    KH->>UI: Nhấn "Đăng nhập" hoặc "Đăng ký"
+    alt Chưa có tài khoản
+        UI->>BE: GET /users/register/
+        UI-->>KH: Hiển thị form đăng ký
+        KH->>UI: Nhập thông tin & gửi
+        UI->>BE: POST /users/register/
+        BE->>DB: Tạo User mới (role=customer)
+        DB-->>BE: Xác nhận
+        BE-->>UI: Đăng nhập tự động, redirect menu
+    else Đã có tài khoản
+        UI->>BE: GET /users/login/
+        UI-->>KH: Hiển thị form đăng nhập
+        KH->>UI: Nhập tài khoản & gửi
+        UI->>BE: POST /users/login/
+        BE->>DB: Xác thực User
+        DB-->>BE: Kết quả xác thực
+        BE-->>UI: Redirect về menu
+    end
+
+    %% Gửi đơn hàng
+    KH->>UI: Nhập số bàn & nhấn "Gửi đơn"
+    UI->>BE: POST /cart/submit/
+    BE->>DB: Cập nhật Order: status='pending', table_number
+    DB-->>BE: Lưu đơn hàng
+    BE-->>UI: Redirect /order/<id>/status/
+
+    %% Xem trạng thái đơn
+    KH->>UI: Xem trạng thái đơn hàng
+    UI->>BE: GET /order/<order_id>/status/
+    BE->>DB: Lấy Order & OrderItem
+    DB-->>BE: Trả về đơn hàng
+    BE-->>UI: Render trang trạng thái
+    UI-->>KH: Hiển thị trạng thái (pending / cooking / done / served)
+
+    %% Gọi nhân viên
+    KH->>UI: Gọi nhân viên / yêu cầu dịch vụ
+    UI->>BE: POST /customer/request/
+    BE->>DB: Tạo CustomerRequest (bàn, loại yêu cầu, ghi chú)
+    DB-->>BE: Lưu yêu cầu
+    BE-->>UI: Thông báo thành công
+    UI-->>KH: "Nhân viên sẽ đến ngay"
