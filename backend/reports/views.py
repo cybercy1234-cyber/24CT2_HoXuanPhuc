@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Sum
 from django.utils import timezone
-from orders.models import Order
+from orders.models import Order, OrderItem
 from .models import RevenueReport, PaymentReport
 
 
