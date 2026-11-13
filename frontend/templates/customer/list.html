@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Yêu cầu khách hàng{% endblock %}
+{% block content %}
+{% for n in paid_notifications %}
+<div class="card" style="border-left:6px solid #16a34a; background:#f0fdf4;">
+  <b>💳 Thông báo thanh toán:</b> Bàn {{ n.table_number }} đã thanh toán thành công đơn hàng #{{ n.id }} ({{ n.total_price }}đ).
+  <form method="post" action="{% url 'dismiss_payment_notification' n.id %}" style="display:inline; margin-left:10px;">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'customer_requests' %}">
+    <button class="btn light" type="submit">Đã xem</button>
+  </form>
+</div>
+{% endfor %}
+<h2>📋 Danh sách yêu cầu từ khách</h2>
+<div class="card">
+  <ul>
+    {% for req in requests %}
+    <li style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <span><b>Bàn {{ req.table_number }}</b> — {{ req.get_request_type_display }}
+      {% if req.note %}<i>({{ req.note }})</i>{% endif %}</span>
+      <span>
+        {% if req.is_handled %}
+          <span class="btn secondary" style="pointer-events:none;">Đã xử lý</span>
+        {% else %}
+          <a class="btn light" href="{% url 'handle_request' req.id %}">Xử lý</a>
+        {% endif %}
+      </span>
+    </li>
+    {% empty %}
+    <li>Không có yêu cầu nào.</li>
+    {% endfor %}
+  </ul>
+  {% if pending_count == 0 %}
+  <p style="margin-top:12px;color:#666;">Không còn yêu cầu đang chờ xử lý.</p>
+  {% endif %}
+</div>
+{% endblock %}

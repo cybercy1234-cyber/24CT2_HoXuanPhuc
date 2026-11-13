@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo doanh thu{% endblock %}
+{% block content %}
+<h2>📈 Báo cáo doanh thu</h2>
+<div class="card">
+  <p><b>Tổng doanh thu:</b> <span class="price">{{ total_revenue|floatformat:0 }}đ</span></p>
+  <p><b>Tổng số đơn:</b> {{ total_orders }}</p>
+</div>
+
+<form method="get" class="card">
+  <label>Lọc theo ngày: từ <input type="date" name="start_date" value="{{ start_date|default:'' }}"></label>
+  <label>đến <input type="date" name="end_date" value="{{ end_date|default:'' }}"></label>
+  <button class="btn" type="submit">Xem</button>
+</form>
+
+<div class="card">
+  <h3>🔥 Món bán chạy nhất</h3>
+  <ul>
+    {% for item in top_items %}
+    <li>{{ item.items__menu_item__name }} — SL: <b>{{ item.total_sold }}</b></li>
+    {% empty %}
+    <li>Chưa có dữ liệu.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="card">
+  <h3>📤 Xuất trang tính (Excel)</h3>
+  <a class="btn" href="{% url 'export_combined_excel' %}">Xuất Excel báo cáo (2 sheet: doanh thu + thanh toán)</a>
+  <a class="btn secondary" href="{% url 'export_revenue_excel' %}">Chỉ sheet doanh thu</a>
+</div>
+
+{% if revenue_reports %}
+<div class="card">
+  <h3>Bản ghi đã lưu</h3>
+  <table>
+    <thead><tr><th>Ngày bắt đầu</th><th>Ngày kết thúc</th><th>Tổng doanh thu</th><th>Tổng số đơn</th></tr></thead>
+    <tbody>
+      {% for r in revenue_reports %}
+      <tr><td>{{ r.start_date }}</td><td>{{ r.end_date }}</td><td>{{ r.total_revenue }}đ</td><td>{{ r.total_orders }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

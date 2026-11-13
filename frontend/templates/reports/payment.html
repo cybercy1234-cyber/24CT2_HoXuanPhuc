@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo thanh toán{% endblock %}
+{% block content %}
+<h2>💳 Báo cáo phương thức thanh toán</h2>
+<div class="card">
+  <p><b>Tổng tiền:</b> {{ total_amount }}đ</p>
+  <p><b>Tổng số giao dịch:</b> {{ total_transactions }}</p>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>Phương thức</th><th>Số giao dịch</th><th>Tổng tiền</th></tr></thead>
+    <tbody>
+      {% for p in payment_reports %}
+      <tr><td>{{ p.get_method_display }}</td><td>{{ p.total_transactions }}</td><td>{{ p.total_amount }}đ</td></tr>
+      {% empty %}
+      <tr><td colspan="3">Chưa có dữ liệu thanh toán đã lưu. Hãy tạo trong Admin → Báo cáo thanh toán.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="card">
+  <h3>📤 Xuất trang tính (Excel)</h3>
+  <a class="btn" href="{% url 'export_combined_excel' %}">Xuất Excel báo cáo (2 sheet: doanh thu + thanh toán)</a>
+  <a class="btn secondary" href="{% url 'export_payment_excel' %}">Chỉ sheet thanh toán</a>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}QR Thanh toán{% endblock %}
+{% block content %}
+{% for n in paid_notifications %}
+<div class="card" style="border-left:6px solid #16a34a; background:#f0fdf4;">
+  <b>💳 Thông báo thanh toán:</b> Bàn {{ n.table_number }} đã thanh toán thành công đơn hàng #{{ n.id }} ({{ n.total_price }}đ).
+  <form method="post" action="{% url 'dismiss_payment_notification' n.id %}" style="display:inline; margin-left:10px;">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'qr_payment' %}">
+    <button class="btn light" type="submit">Đã xem</button>
+  </form>
+</div>
+{% endfor %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="card" style="border-left:6px solid #2F5597; background:#eef4ff;">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+<h2>💳 QR Thanh toán</h2>
+<div class="card" style="max-width: 420px; margin: 0 auto; text-align: center;">
+  <img src="{% static 'images/qr_payment.png' %}" alt="QR thanh toán" style="width: 100%; max-width: 300px; border-radius: 12px; margin-bottom: 14px;">
+  <p><b>Ngân hàng:</b> BIDV / VIETQR</p>
+  <p><b>Chủ tài khoản:</b> HO XUAN PHUC</p>
+  <p><b>Số tài khoản:</b> 8873232506</p>
+  <p style="font-size: 13px; color: #666; margin-top: 10px;">Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</p>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3 style="margin-top:0;">Xác nhận thanh toán đơn hàng</h3>
+  {% if payable_orders %}
+  <table>
+    <thead><tr><th>Đơn</th><th>Bàn</th><th>Tổng tiền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+    <tbody>
+      {% for o in payable_orders %}
+      <tr>
+        <td>#{{ o.id }}</td>
+        <td>{{ o.table_number }}</td>
+        <td>{{ o.total_price }}đ</td>
+        <td>{% if o.is_paid %}Đã thanh toán{% else %}{{ o.get_status_display }}{% endif %}</td>
+        <td>
+          {% if not o.is_paid %}
+          <form method="post" action="{% url 'mark_paid' o.id %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'qr_payment' %}">
+            <button class="btn" type="submit">Xác nhận đã thanh toán</button>
+          </form>
+          {% else %}—{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Không có đơn hàng cần thanh toán.</p>
+  {% endif %}
+</div>
+
+<div class="actions" style="justify-content:center; margin-top: 16px;">
+  <a class="btn secondary" href="{% url 'customer_requests' %}">Quay lại yêu cầu</a>
+</div>
+{% endblock %}

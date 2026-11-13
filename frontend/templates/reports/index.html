@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Báo cáo{% endblock %}
+{% block content %}
+<h2>📊 Báo cáo</h2>
+<div class="card">
+  <p><b>Tổng doanh thu (từ đơn đã lưu):</b> {{ total_revenue|floatformat:0 }}đ</p>
+  <p><b>Tổng số đơn:</b> {{ total_orders }}</p>
+  <p><b>Bản ghi báo cáo doanh thu đã lưu:</b> {{ revenue_count }}</p>
+  <p><b>Bản ghi báo cáo thanh toán đã lưu:</b> {{ payment_count }}</p>
+  <p style="margin-top:12px;">
+    <a class="btn" href="{% url 'export_combined_excel' %}">📥 Xuất Excel báo cáo (2 sheet)</a>
+  </p>
+  <p style="color:#666; font-size:14px;">Bấm nút trên để tải file Excel 2 sheet: <b>Báo cáo doanh thu</b> + <b>Báo cáo thanh toán</b>, lấy theo dữ liệu đã lưu.</p>
+</div>
+
+<div class="card">
+  <h3>Chi tiết doanh thu</h3>
+  <p>
+    <a class="btn secondary" href="{% url 'revenue_report' %}">Xem doanh thu</a>
+    <a class="btn secondary" href="{% url 'payment_report' %}">Xem thanh toán</a>
+  </p>
+</div>
+
+{% if revenue_reports %}
+<div class="card">
+  <h3>📈 Báo cáo doanh thu đã lưu</h3>
+  <table>
+    <thead><tr><th>Ngày bắt đầu</th><th>Ngày kết thúc</th><th>Tổng doanh thu</th><th>Tổng số đơn</th></tr></thead>
+    <tbody>
+      {% for r in revenue_reports %}
+      <tr><td>{{ r.start_date }}</td><td>{{ r.end_date }}</td><td>{{ r.total_revenue }}đ</td><td>{{ r.total_orders }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if payment_reports %}
+<div class="card">
+  <h3>💳 Báo cáo thanh toán đã lưu</h3>
+  <table>
+    <thead><tr><th>Phương thức</th><th>Số giao dịch</th><th>Tổng tiền</th></tr></thead>
+    <tbody>
+      {% for p in payment_reports %}
+      <tr><td>{{ p.get_method_display }}</td><td>{{ p.total_transactions }}</td><td>{{ p.total_amount }}đ</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

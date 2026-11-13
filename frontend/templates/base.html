@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Nhà hàng{% endblock %}</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<nav>
+  <a class="brand" href="{% url 'customer_menu' %}">🍜 Food Ordering</a>
+  {% if user.is_authenticated and user.role != 'customer' %}
+    <a href="{% url 'staff_menu' %}">Thực đơn NV</a>
+    <a href="{% url 'staff_menu' %}">Xác nhận món</a>
+    <a href="{% url 'customer_requests' %}">Yêu cầu của khách</a>
+    <a href="{% url 'qr_payment' %}">QR thanh toán</a>
+    {% if user.role == 'admin' or user.role == 'cashier' %}
+      <a href="{% url 'reports_index' %}">Báo cáo</a>
+    {% endif %}
+    {% if user.role == 'admin' %}<a href="/admin/">Quản trị</a>{% endif %}
+    <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>
+  {% elif user.is_authenticated %}
+    <a href="{% url 'customer_menu' %}">Thực đơn</a>
+    <a href="{% url 'cart' %}">Giỏ hàng</a>
+    <a href="{% url 'request_service' %}">Gọi nhân viên</a>
+    <a href="{% url 'logout' %}">Đăng xuất ({{ user.username }})</a>
+  {% else %}
+    <a href="{% url 'customer_menu' %}">Thực đơn</a>
+    <a href="{% url 'cart' %}">Giỏ hàng</a>
+    <a href="{% url 'request_service' %}">Gọi nhân viên</a>
+    {% block auth_links %}
+      <a href="{% url 'login' %}">Đăng nhập</a>
+      <a href="{% url 'register' %}">Đăng ký</a>
+    {% endblock auth_links %}
+  {% endif %}
+</nav>
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

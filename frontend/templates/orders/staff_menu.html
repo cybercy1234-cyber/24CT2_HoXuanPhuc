@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Thực đơn - Nhân viên{% endblock %}
+{% block auth_links %}{% endblock auth_links %}
+{% block content %}
+{% for n in paid_notifications %}
+<div class="card" style="border-left:6px solid #16a34a; background:#f0fdf4;">
+  <b>💳 Thông báo thanh toán:</b> Bàn {{ n.table_number }} đã thanh toán thành công đơn hàng #{{ n.id }} ({{ n.total_price }}đ).
+  <form method="post" action="{% url 'dismiss_payment_notification' n.id %}" style="display:inline; margin-left:10px;">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'staff_menu' %}">
+    <button class="btn light" type="submit">Đã xem</button>
+  </form>
+</div>
+{% endfor %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="card" style="border-left:6px solid #2F5597; background:#eef4ff;">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+<h2>👨‍🍳 Thực đơn - Nhân viên</h2>
+<p style="margin-bottom: 16px;">Xin chào, <b>{{ user.username }}</b> ({{ user.get_role_display }})</p>
+
+<div class="card">
+  <h3 style="margin-top:0;">📦 Đơn hàng chờ xác nhận</h3>
+  {% if pending_orders %}
+  <table>
+    <thead><tr><th>Đơn</th><th>Bàn</th><th>Số món</th><th>Tổng tiền</th><th>Thao tác</th></tr></thead>
+    <tbody>
+      {% for o in pending_orders %}
+      <tr>
+        <td>#{{ o.id }}</td>
+        <td>{{ o.table_number }}</td>
+        <td>{{ o.items.count }}</td>
+        <td>{{ o.total_price }}đ</td>
+        <td>
+          <a class="btn light" href="{% url 'order_status' o.id %}">Xem</a>
+          <form method="post" action="{% url 'confirm_order' o.id %}?next={% url 'staff_menu' %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="btn" type="submit">Xác nhận món</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Không có đơn hàng chờ xác nhận.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">🍽️ Danh sách món ăn</h3>
+  <div class="grid">
+    {% for item in items %}
+    <div class="card" style="margin-bottom:0; text-align:center;">
+      {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">{% endif %}
+      <h3>{{ item.name }}</h3>
+      <p class="price">{{ item.price }}đ</p>
+      <p>{{ item.description }}</p>
+      <div class="actions" style="justify-content:center;">
+        <a class="btn" href="{% url 'add_to_cart' item.id %}">Thêm vào giỏ</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3 style="margin-top:0;">⚡ Chức năng nhân viên</h3>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+    <a class="btn" href="{% url 'cart' %}" style="display:block; text-align:center;">🛒 Giỏ hàng</a>
+    <a class="btn secondary" href="{% url 'customer_requests' %}" style="display:block; text-align:center;">📋 Yêu cầu khách</a>
+    <a class="btn secondary" href="{% url 'qr_payment' %}" style="display:block; text-align:center;">💳 QR thanh toán</a>
+    <a class="btn light" href="{% url 'revenue_report' %}" style="display:block; text-align:center;">📈 Doanh thu</a>
+    {% if user.role == 'admin' %}
+    <a class="btn light" href="/admin/" style="display:block; text-align:center;">⚙️ Quản trị</a>
+    {% endif %}
+    <a class="btn light" href="{% url 'logout' %}" style="display:block; text-align:center;">🚪 Đăng xuất</a>
+  </div>
+</div>
+
+{% endblock %}
