@@ -4,7 +4,7 @@ from .models import CustomerRequest
 
 @admin.register(CustomerRequest)
 class CustomerRequestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'table_number', 'request_type', 'customer', 'is_handled', 'created_at')
+    list_display = ('id', 'table', 'table_number', 'request_type', 'customer', 'is_handled', 'created_at')
     list_filter = ('is_handled', 'request_type', 'created_at')
-    search_fields = ('table_number',)
+    search_fields = ('table_number', 'customer__username')
     list_editable = ('is_handled',)
